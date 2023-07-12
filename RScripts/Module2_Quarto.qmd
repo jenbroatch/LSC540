@@ -1,0 +1,243 @@
+---
+title: "Module 2"
+format: docx
+editor: visual
+---
+
+## What is Quarto?
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Quarto Basics- Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+1 + 1
+```
+
+You can add options to executable code like this
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
+
+## Frequency Tables
+
+Let's create a frequency table for the variable ChestPainType within the heart data set. Don't forget to read in the data first.
+
+```{r}
+heart <- read.csv("C:/Users/jenni/Dropbox (ASU)/Courses/LSC540/Data Sets/heart.csv") 
+my.table <- table(heart$ChestPainType, dnn="Chest Pain Type")
+my.table
+```
+
+Let's add the total to the table.
+
+```{r}
+addmargins(my.table)
+```
+
+Let's create a relative frequency table.
+
+```{r}
+my.table2 <- table(heart$HeartDisease, dnn=c("Heart Disease (1=yes, 0=no)"))
+prop.table(my.table2)
+round(prop.table(my.table2), 4) # Rounded 
+```
+
+Create a pretty table that is more visually appealing.
+
+```{r}
+knitr::kable(my.table)
+```
+
+## Contingency Tables
+
+```{r}
+my.ctable <- table(heart$ChestPainType, heart$HeartDisease,dnn=c("Heart Disease (1=yes, 0=no)","Chest Pain Type" ))
+my.ctable
+knitr::kable(my.ctable)
+addmargins(my.ctable) # Add Row and Column Totals 
+prop.table(my.ctable)
+```
+
+## Bar Graphs
+
+Now let's visualize the summary data
+
+```{r}
+library(ggplot2)  # Loads the ggplot2 library
+library(dplyr)  # Loads the dplyr library
+
+heart %>% 
+  ggplot( aes(x = ChestPainType)) + 
+    geom_bar(fill = "blue") + 
+    labs(
+      title = "Distribution of Chest Pain Type", 
+      x = "Chest Pain Type"
+      ) + 
+    theme_bw()
+```
+
+Flip to horizontal bars:
+
+```{r}
+heart %>% 
+  ggplot( aes(x = ChestPainType)) + 
+    geom_bar(fill = "blue") + 
+    labs(
+      title = "Distribution of Chest Pain Type", 
+      x = "Chest Pain Type"
+      ) + 
+    theme_bw() + 
+    coord_flip()
+
+```
+
+Change to relative frequency
+
+```{r}
+
+heart %>% 
+  ggplot( aes(x = ChestPainType, y = after_stat(count / sum(count)))) + 
+  geom_bar(fill = "blue") + 
+  labs(
+    title = "Relative Frequency Distribution of Chest Pain Type", 
+    x = "Chest Pain Type", 
+    y= "Relative Frequency"
+  ) + 
+  theme_bw() 
+
+
+
+```
+
+## Stacked and Grouped Bar Graphs
+
+```{r}
+
+heart %>% 
+  ggplot( aes(x = ChestPainType, fill =as.factor(HeartDisease) )) + 
+  geom_bar(position="dodge") + 
+  labs(
+    title = "Side by Side Bar Graph", 
+    x = "Chest Pain Type", 
+    fill= "Heart Disease (1=Yes, 0=No)"
+  ) + 
+  theme_bw() 
+
+heart %>% 
+  ggplot( aes(x = ChestPainType, fill =as.factor(HeartDisease) )) + 
+  geom_bar() + 
+  labs(
+    title = "Stacked Bar Graph", 
+    x = "Chest Pain Type", 
+    fill= "Heart Disease (1=Yes, 0=No)"
+  ) + 
+  theme_bw() 
+```
+
+# Module 2.2
+
+## Univariate Summary statistics
+
+```{r}
+#Measures of center
+mean(heart$Age)
+median(heart$Age)
+```
+
+```{r}
+#Measures of spread
+sd(heart$Age)
+var(heart$Age)
+diff(range(heart$Age))
+range(heart$Age)
+summary(heart$Age)
+```
+
+## Comparing Across Groups
+
+```{r}
+library(mosaic) # Loads the mosaic package
+favstats(Age ~ HeartDisease, data = heart)
+favstats(MaxHR ~ HeartDisease, data = heart)
+```
+
+## Histograms - Univariate Numerical Data
+
+```{r}
+
+ggplot(data = heart, aes(x = MaxHR)) + 
+  geom_histogram() + 
+  ggtitle("Distribution of Max Heart Rate") +
+  xlab("Max Heart Rate")
+
+
+ggplot(data = heart, aes(x = MaxHR)) + 
+  geom_histogram(bins=35) + 
+  ggtitle("Distribution of Max Heart Rate") +
+  xlab("Max Heart Rate")
+```
+
+Too few bins
+
+```{r}
+ggplot(data = heart, aes(x = MaxHR)) + 
+  geom_histogram(bins=10) + 
+  ggtitle("Distribution of Max Heart Rate") +
+  xlab("Max Heart Rate")
+```
+
+Too many bins
+
+```{r}
+ggplot(data = heart, aes(x = MaxHR)) + 
+  geom_histogram(bins=65) + 
+  ggtitle("Distribution of Max Heart Rate") +
+  xlab("Max Heart Rate")
+```
+
+## Boxplots- Comparing a numerical variable across groups
+
+```{r}
+ggplot(heart, aes(x=as.factor(HeartDisease), y=MaxHR)) + geom_boxplot() +
+  ggtitle("Distribution of MaxHR ") +
+  ylab("Max Heart Rate") + 
+  xlab("Heart Disease (1=Yes, 0=No)") 
+```
+
+# Module 2.3 - Bivariate data
+
+## Scatterplots
+
+```{r}
+my.plot <- ggplot(data = heart, aes(x = Age, y = MaxHR)) + geom_point(color = "blue") + 
+  ggtitle("Relationship between Age and Max HR") +
+  xlab("Age (in years) ") + 
+  ylab("Max HR (beats/minute)") 
+my.plot  
+```
+
+Multivariate Scatterplot - add third categorical variable
+
+```{r}
+my.plot2 <- ggplot(data = heart, aes(x = Age, y = MaxHR)) + geom_point(color = "blue") + 
+  geom_point(aes(color = factor(HeartDisease)) ) + 
+  ggtitle("Relationship between Age and Max HR") +
+  xlab("Age (in years) ") + 
+  ylab("Max HR (beats/minute)") +
+  scale_color_discrete(name="Heart Disease")
+my.plot2
+```
+
+Correlation coefficient
+
+```{r}
+cor(heart$Age, heart$MaxHR)
+```
+
