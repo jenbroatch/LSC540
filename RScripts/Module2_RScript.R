@@ -85,7 +85,16 @@ heart %>%
 mean(heart$Age)
 median(heart$Age)
 
+#Measures of spread
+sd(heart$Age)
+var(heart$Age)
+diff(range(heart$Age))
+range(heart$Age)
+summary(heart$Age)
 
+library(mosaic) # Loads the mosaic package
+favstats(Age ~ HeartDisease, data = heart)
+favstats(MaxHR ~ HeartDisease, data = heart)
 
 ggplot(data = heart, aes(x = MaxHR)) + 
   geom_histogram() + 
@@ -118,23 +127,23 @@ ggplot(heart, aes(x=as.factor(HeartDisease), y=MaxHR)) + geom_boxplot() +
   ylab("Max Heart Rate") + 
   xlab("Heart Disease (1=Yes, 0=No)") 
 
+#Module 2.5
+my.plot <- ggplot(data = heart, aes(x = Age, y = MaxHR)) + geom_point(color = "blue") + 
+  ggtitle("Relationship between Age and Max HR") +
+  xlab("Age (in years) ") + 
+  ylab("Max HR (beats/minute)") 
+my.plot 
 
+my.plot2 <- ggplot(data = heart, aes(x = Age, y = MaxHR)) + geom_point(color = "blue") + 
+  geom_point(aes(color = factor(HeartDisease)) ) + 
+  ggtitle("Relationship between Age and Max HR") +
+  xlab("Age (in years) ") + 
+  ylab("Max HR (beats/minute)") +
+  scale_color_discrete(name="Heart Disease")
+my.plot2
 
+cor(heart$Age, heart$MaxHR)
 
-#Read in healthcare-stroke.csv from URL
-stroke <- read.csv("https://raw.githubusercontent.com/jenbroatch/LSC540/main/DataSets/healthcare-stroke.csv") 
-str(stroke)
-head(stroke)
-View(stroke)
-
-#Identify 1/0 as factors, so R knows that it is not a number 
-stroke$stroke <- as.factor(stroke$stroke)
-stroke$hypertension <- as.factor(stroke$hypertension)
-stroke$heart_disease <-factor(stroke$heart_disease)
-
-#Correct issue with N/A in bmi 
-stroke <- transform(stroke, bmi= as.double(bmi))
-str(stroke)
 
 
 
