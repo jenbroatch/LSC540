@@ -70,7 +70,7 @@ hist(climate$Difference, xlab="Difference in Temperature 1951-2000 to 1901-1950"
 t.test(climate$AverageTemp1951_2000, climate$AverageTemp1901_1950, paired =T)
 t.test(climate$Difference)
 
-
+#Module 5.4
 qqnorm(crab$gRatePer100days)
 wilcox.test(crab$gRatePer100days, conf.int=TRUE)
 crabgrowth_boot <- do(2000) * mean( ~gRatePer100days , data = resample(crab))
