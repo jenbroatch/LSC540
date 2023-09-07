@@ -1,5 +1,6 @@
 #Module 6 
 #Regression 
+gestation <- read.csv("https://raw.githubusercontent.com/jenbroatch/LSC540/main/DataSets/Animals.csv")
 reg1=lm(gestation$Longevity~gestation$Gestational.Period )
 plot(gestation$Gestational.Period, gestation$Longevity, xlab="Gestational Period (days)", ylab="Longevity (years)")
 abline(reg1)
