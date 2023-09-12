@@ -45,7 +45,7 @@ Teststat
 Teststat^2
 
 
-heart <- read.csv("C:/Users/jenni/Dropbox (ASU)/Courses/LSC540/Data Sets/heart.csv") 
+heart <- heart <- read.csv("C:/Users/jenn9/Dropbox (ASU)/Courses/LSC540/Data Sets/heart.csv")
 View(heart)
 library(dplyr)
 library(ggplot2)
@@ -64,4 +64,9 @@ heart %>%
     fill= "Heart Disease (1=Yes, 0=No)"
   ) + 
   theme_bw() 
-prop.test(table(heart$HeartDisease, heart$ExerciseAngina))  
+
+tally(~ExerciseAngina | HeartDisease, data=heart)
+
+prop.test(~ExerciseAngina | HeartDisease, data=heart,
+          conf.level=0.95, success='N')
+
