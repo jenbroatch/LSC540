@@ -3,6 +3,8 @@
 
 install.packages("binom", dependencies = TRUE) # only if not yet installed
 library(binom) 
+library(mosaic)
+
 .099*1432 
 binom.confint(142, n = 1432)
 
@@ -65,8 +67,7 @@ heart %>%
   ) + 
   theme_bw() 
 
-tally(~ExerciseAngina | HeartDisease, data=heart)
+tally(~ExerciseAngina | as.factor(HeartDisease), data=heart)
 
-prop.test(~ExerciseAngina | HeartDisease, data=heart,
-          conf.level=0.95, success='N')
+prop.test(~ExerciseAngina | HeartDisease, data=heart, conf.level=0.95, success='Y')
 
